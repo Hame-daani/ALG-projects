@@ -1,4 +1,5 @@
 def horizontal_tail(coins, index, N):
+    # find next column that is empty. cause its the tail of our horizontal collection.
     j = index
     while j < N and coins[j]:
         j += 1
@@ -11,17 +12,23 @@ def horizontal_collect(coins, index, tail):
         index += 1
 
 
+def vertical_collect(coins, index):
+    coins[index] = 0
+
+
 def collect(coins, index, N):
-    if index >= N:
+    if index >= N:  # base case: reaching end of columns.
         return 0, ""
     elif coins[index] == 0:
+        # if column is empty, go to next column.
         return collect(coins, index+1, N)
     else:
+        # vertical collecting result is equal to 'column height'.
         v_result = coins[index]
         h_tail = horizontal_tail(coins, index, N)
-        h_result = h_tail - index+1
+        h_result = h_tail - index + 1
         if v_result > h_result:
-            coins[index] = 0
+            vertical_collect(coins, index)
             num_moves, moves = collect(coins, index+1, N)
             return num_moves + 1, f"V {index+1}\n"+moves
         if h_result >= v_result:
