@@ -1,4 +1,3 @@
-
 def find_min(coins, low, high):
     min = low
     while(low <= high):
@@ -16,21 +15,27 @@ def h_pop(coins, low, high, n):
 
 
 def collect(coins, low, high):
+    # base case
     if low == high:
         if coins[low]:
             return 1, f"V {low+1}\n"
     if low > high:
         return 0, ""
 
+    # finding minimum height. it's will be our halfing point.
     minimum = find_min(coins, low, high)
+    # vertical moves number is equal to columns number.
     v_result = high - low + 1
+    # horizontal moves number is equal to minimum height that we found.
     h_result = coins[minimum]
     coins = h_pop(coins, low, high, h_result)
     h_moves = ""
     for a in range(h_result):
         h_moves += f"H {low+1} {high+1}\n"
+
     left_result, left_moves = collect(coins, low, minimum-1)
     right_result, right_moves = collect(coins, minimum+1, high)
+    
     h_result += left_result+right_result
     if v_result < h_result:
         v_moves = ""
