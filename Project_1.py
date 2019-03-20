@@ -1,51 +1,55 @@
-def horizontal_tail(coins, index, N):
-    # find next column that is empty. cause its the tail of our horizontal collection.
-    j = index
-    while j < N and coins[j]:
-        j += 1
-    return j-1
+
+def find_min(coins, low, high):
+    min = low
+    while(low <= high):
+        if coins[low] <= coins[min]:
+            min = low
+        low += 1
+    return min
 
 
-def horizontal_collect(coins, index, tail):
-    while index <= tail:
-        coins[index] -= 1
-        index += 1
+def h_pop(coins, low, high, n):
+    for a in range(n):
+        for b in range(low, high+1):
+            coins[b] -= 1
+    return coins
 
 
-def vertical_collect(coins, index):
-    coins[index] = 0
-
-
-def collect(coins, index, N):
-    if index >= N:  # base case: reaching end of columns.
+def collect(coins, low, high):
+    if low == high:
+        if coins[low]:
+            return 1, f"V {low+1}\n"
+    if low > high:
         return 0, ""
-    elif coins[index] == 0:
-        # if column is empty, go to next column.
-        return collect(coins, index+1, N)
-    else:
-        # vertical collecting result is equal to 'column height'.
-        v_result = coins[index]
-        h_tail = horizontal_tail(coins, index, N)
-        h_result = h_tail - index + 1
-        if v_result > h_result:
-            vertical_collect(coins, index)
-            # we go to the next column.
-            num_moves, moves = collect(coins, index+1, N)
-            return num_moves + 1, f"V {index+1}\n"+moves
-        if h_result >= v_result:
-            horizontal_collect(coins, index, h_tail)
-            # we stay at current column.
-            num_moves, moves = collect(coins, index, N)
-            return num_moves+1, f"H {index+1} {h_tail+1}\n"+moves
+
+    minimum = find_min(coins, low, high)
+    v_result = high - low + 1
+    h_result = coins[minimum]
+    coins = h_pop(coins, low, high, h_result)
+    h_moves = ""
+    for a in range(h_result):
+        h_moves += f"H {low+1} {high+1}\n"
+    left_result, left_moves = collect(coins, low, minimum-1)
+    right_result, right_moves = collect(coins, minimum+1, high)
+    h_result += left_result+right_result
+    if v_result < h_result:
+        v_moves = ""
+        for a in range(low, high+1):
+            v_moves += f"V {a+1}\n"
+        return v_result, v_moves
+    elif h_result <= v_result:
+        h_moves += left_moves
+        h_moves += right_moves
+        return h_result, h_moves
 
 
-def min_step_collect(stack):
-    return collect(stack, 0, len(stack))
+def min_step_collect(coins):
+    return collect(coins=coins, low=0, high=len(coins)-1)
 
 
 if __name__ == "__main__":
     number_of_columns = 5
-    stack = [2, 1, 2, 5, 1]
-    num_moves, moves = min_step_collect(stack)
+    coins = [2, 1, 2, 5, 1]
+    num_moves, moves = min_step_collect(coins)
     print(num_moves)
     print(moves)
