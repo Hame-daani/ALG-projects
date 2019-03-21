@@ -54,8 +54,8 @@ def min_step_collect(coins):
 
 
 if __name__ == "__main__":
-    number_of_columns = 5
-    coins = [2, 1, 2, 5, 1]
+    # get input from user in format: "2 5 4 1"
+    coins = [int(c) for c in input("Input number of coins in each column: ").split()]
     num_moves, moves = min_step_collect(coins)
     print(num_moves)
     print(moves)
