@@ -1,2 +1,2 @@
-# Project 1
-Try to find minimum step for collecting coins in columns.
+# Algorithm Design Course Projects
+Project 1: Divide and Conqure
