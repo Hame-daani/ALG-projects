@@ -37,25 +37,22 @@ def findAnswer(x, y, costs):
             cost['ins'] = costs['ins'] + t_cost[i-1][j]
             minKey, minValue = findMin(cost)
             t_cost[i][j] = minValue
-            # moves[i][j] = minKey + \
-            #     f" {x[j-1]} {y[i-1]}" if minKey == 'tw' else minKey+f" {x[j-1]}"
-            if minKey == 'tw':
-                moves[i][j] = minKey + f" {x[j-1]} {y[i-1]}"
-            if minKey == 'cp' or minKey == 'del':
+            if minKey == 'del' or minKey == 'cp':
                 moves[i][j] = minKey + f" {x[j-1]}"
-            else:
+            elif minKey == 'ins':
                 moves[i][j] = minKey + f" {y[i-1]}"
+            else:
+                moves[i][j] = minKey + f" {x[j-1]}-{y[i-1]}"
 
     return t_cost, moves
 
 
 def prettyPrint(x, y, cost, moves):
-
     for row in cost:
         for column in row:
             print(column, end='\t')
         print()
-    print("-----")
+    print("-----------")
     for row in moves:
         for column in row:
             print(column, end='\t')
@@ -75,16 +72,8 @@ def find(moves, n, m):
         return find(moves, n-2, m-2)+"\n"+moves[n][m]
 
 
-# x = input("Input source string: ")
-# y = input("Input target string: ")
-# costs = {}
-# costs["cp"] = int(input("input copy costs: "))
-# costs["rep"] = int(input("input replace costs: "))
-# costs["del"] = int(input("input delete costs: "))
-# costs["ins"] = int(input("input insert costs: "))
-# costs["tw"] = int(input("input twiddle costs: "))
-x = "alta"
-y = "alat"
+x = input("Input source string: ")
+y = input("Input target string: ")
 costs = {}
 costs["cp"] = 3
 costs["rep"] = 6
@@ -96,6 +85,6 @@ t_cost, moves = findAnswer(x, y, costs)
 prettyPrint(x, y, t_cost, moves)
 cost = t_cost[len(y)][len(x)]
 move = find(moves, len(y), len(x))
-print()
-print(cost)
-print (move)
+print("----------------------")
+print("Answer is: ", cost)
+print(move)
