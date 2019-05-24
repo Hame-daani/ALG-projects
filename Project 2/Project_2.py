@@ -1,3 +1,6 @@
+from pandas import DataFrame
+
+
 def findMin(cost):
     """
     return minimum between our 5 operation costs.
@@ -19,7 +22,7 @@ def findAnswer(x, y, costs):
         y: target string
         costs: dic include each operation's cost.
     """
-    
+
     # initial the arrays
     t_cost = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
     moves = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
@@ -64,15 +67,12 @@ def findAnswer(x, y, costs):
 
 
 def prettyPrint(x, y, cost, moves):
-    for row in cost:
-        for column in row:
-            print(column, end='\t')
-        print()
-    print("-----------")
-    for row in moves:
-        for column in row:
-            print(column, end='\t')
-        print()
+    """
+    pretty printing our two array.
+    """
+    print(DataFrame(data=cost, index=[0]+list(y), columns=[0]+list(x)))
+    print("--------------------")
+    print(DataFrame(data=moves, index=[0]+list(y), columns=[0]+list(x)))
 
 
 def find(moves, n, m):
