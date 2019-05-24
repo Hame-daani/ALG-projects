@@ -16,7 +16,7 @@ def findMin(costs):
 def findAnswer(x, y, op_costs):
     """
     main func that return two array for total cost and operations followed to that cost.
-    
+
     input:
         x: source string
         y: target string
@@ -24,8 +24,8 @@ def findAnswer(x, y, op_costs):
     """
 
     # initial the arrays
-    total_costs = [ [0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1) ]
-    moves = [ [0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1) ]
+    total_costs = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
+    moves = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
     total_costs[0][0] = 0
     moves[0][0] = 0
 
@@ -57,7 +57,7 @@ def findAnswer(x, y, op_costs):
             costs['ins'] = op_costs['ins'] + total_costs[i-1][j]
             # find minimum between this operations.
             minKey, minValue = findMin(costs)
-            
+
             total_costs[i][j] = minValue
             if minKey == 'del' or minKey == 'cp':
                 moves[i][j] = minKey + f" {x[j-1]}"
@@ -67,17 +67,6 @@ def findAnswer(x, y, op_costs):
                 moves[i][j] = minKey + f" {x[j-1]}-{y[i-1]}"
 
     return total_costs, moves
-
-
-def prettyPrint(x, y, costs, moves):
-    """
-    pretty printing our two array.
-    """
-    print("----------------------")
-    print(DataFrame(data=costs, index=[0]+list(y), columns=[0]+list(x)))
-    print("----------------------")
-    print(DataFrame(data=moves, index=[0]+list(y), columns=[0]+list(x)))
-    print("----------------------")
 
 
 def find(moves, n, m):
@@ -90,13 +79,24 @@ def find(moves, n, m):
     if n == 0 and m == 0:
         return ""
     if moves[n][m].startswith('cp') or moves[n][m].startswith('rep'):
-        return find(moves, n-1, m-1) + "\n"+ moves[n][m]
+        return find(moves, n-1, m-1) + "\n" + moves[n][m]
     if moves[n][m].startswith('del'):
-        return find(moves, n, m-1) + "\n"+ moves[n][m]
+        return find(moves, n, m-1) + "\n" + moves[n][m]
     if moves[n][m].startswith('ins'):
-        return find(moves, n-1, m) + "\n"+moves[n][m]
+        return find(moves, n-1, m) + "\n" + moves[n][m]
     if moves[n][m].startswith('tw'):
-        return find(moves, n-2, m-2)+ "\n"+moves[n][m]
+        return find(moves, n-2, m-2) + "\n" + moves[n][m]
+
+
+def prettyPrint(x, y, costs, moves):
+    """
+    pretty printing our two array.
+    """
+    print("----------------------")
+    print(DataFrame(data=costs, index=[0]+list(y), columns=[0]+list(x)))
+    print("----------------------")
+    print(DataFrame(data=moves, index=[0]+list(y), columns=[0]+list(x)))
+    print("----------------------")
 
 
 def readData(filename):
@@ -126,17 +126,18 @@ def getAnswer(total_costs, total_moves):
 
 if __name__ == "__main__":
     op_costs = readData('in.txt')
-    print(DataFrame.from_dict(op_costs,orient='index',columns=["operation's costs"]))
+    print(DataFrame.from_dict(op_costs, orient='index',
+                              columns=["operation's costs"]))
     print("----------------------")
     x = input("Input source string: ")
     y = input("Input target string: ")
 
     totalcosts, totalmoves = findAnswer(x, y, op_costs)
-    
+
     cost, moves = getAnswer(totalcosts, totalmoves)
 
     print("\nAnswer is: ", cost)
-    print("\nWith this moves:",end="")
+    print("\nWith this moves:", end="")
     print(moves)
 
     prettyPrint(x, y, totalcosts, totalmoves)
