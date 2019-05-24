@@ -8,9 +8,8 @@ def findMin(costs):
     minKey = list(costs.keys())[0]
     minValue = list(costs.values())[0]
     for key, value in costs.items():
-        if value < minValue and value > 0:
-            minKey = key
-            minValue = value
+        if value < minValue:
+            minKey, minValue = key, value
     return minKey, minValue
 
 
@@ -21,39 +20,44 @@ def findAnswer(x, y, op_costs):
     input:
         x: source string
         y: target string
-        costs: dic include each operation's cost.
+        op_costs: dic include each operation's cost.
     """
 
     # initial the arrays
-    total_costs = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
-    moves = [[0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1)]
+    total_costs = [ [0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1) ]
+    moves = [ [0 for j in range(0, len(x)+1)] for i in range(0, len(y)+1) ]
     total_costs[0][0] = 0
     moves[0][0] = 0
+
     # fill first row and first column for converting x to null string,and null to y string.
-    # converting x to null: require only delete operation.
-    # converting null to y: is done with insert operation.
-    for i in range(1, len(x)+1):
-        total_costs[0][i] = i * op_costs['del']
-        moves[0][i] = f"del {x[i-1]}"
-    for j in range(1, len(y)+1):
-        total_costs[j][0] = j * op_costs['ins']
-        moves[j][0] = f"ins {y[j-1]}"
+    for j in range(1, len(x)+1):
+        # converting x to null: require only delete operation.
+        total_costs[0][j] = j * op_costs['del']
+        moves[0][j] = f"del {x[j-1]}"
+    for i in range(1, len(y)+1):
+        # converting null to y: is done with insert operation.
+        total_costs[i][0] = i * op_costs['ins']
+        moves[i][0] = f"ins {y[i-1]}"
+
     # main loop to fill our two array
     for i in range(1, len(y)+1):
         for j in range(1, len(x)+1):
             costs = {}
             # we could use copy operation only when two character be the same.
             # otherwise we use replace operation.
-            if x[j-1] == y[i-1]:
+            if y[i-1] == x[j-1]:
                 costs['cp'] = op_costs['cp'] + total_costs[i-1][j-1]
             else:
                 costs['rep'] = op_costs['rep'] + total_costs[i-1][j-1]
-            if i >= 2 and j >= 2 and x[j-1] == y[i-2] and x[j-2] == y[i-1]:
+            # we could use twiddle if chars>=2 and equal to each other.
+            if i >= 2 and j >= 2 and y[i-2] == x[j-1] and y[i-1] == x[j-2]:
                 costs['tw'] = op_costs['tw'] + total_costs[i-2][j-2]
+            # we could use delete and insert in any situation.
             costs['del'] = op_costs['del'] + total_costs[i][j-1]
             costs['ins'] = op_costs['ins'] + total_costs[i-1][j]
             # find minimum between this operations.
             minKey, minValue = findMin(costs)
+            
             total_costs[i][j] = minValue
             if minKey == 'del' or minKey == 'cp':
                 moves[i][j] = minKey + f" {x[j-1]}"
@@ -122,7 +126,8 @@ def getAnswer(total_costs, total_moves):
 
 if __name__ == "__main__":
     op_costs = readData('in.txt')
-    print(DataFrame.from_dict(op_costs,orient='index',columns=[""]))
+    print(DataFrame.from_dict(op_costs,orient='index',columns=["operation's costs"]))
+    print("----------------------")
     x = input("Input source string: ")
     y = input("Input target string: ")
 
