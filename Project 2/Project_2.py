@@ -1,6 +1,6 @@
 def findMin(cost):
-    minKey = 1000000
-    minValue = 1000000
+    minKey = list(cost.keys())[0]
+    minValue = list(cost.values())[0]
     for key, value in cost.items():
         if value < minValue and value > 0:
             minKey = key
@@ -25,9 +25,7 @@ def findAnswer(x, y, costs):
             cost = {}
             if x[j-1] == y[i-1]:
                 cost['cp'] = costs['cp'] + t_cost[i-1][j-1]
-                cost['rep'] = 0
             else:
-                cost['cp'] = 0
                 cost['rep'] = costs['rep'] + t_cost[i-1][j-1]
             if i >= 2 and j >= 2 and x[j-1] == y[i-2] and x[j-2] == y[i-1]:
                 cost['tw'] = costs['tw']+t_cost[i-2][j-2]
