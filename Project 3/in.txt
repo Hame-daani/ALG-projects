@@ -1,0 +1,5 @@
+10000 ali akbar
+15000 akbar sajad
+8000 akbar reza
+5000 sajad ali
+7000 sajad reza
